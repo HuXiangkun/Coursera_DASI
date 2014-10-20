@@ -1,0 +1,62 @@
+---
+title: "Does Race type affects a resident's life"
+author: "Hu Xiangkun"
+date: "2014年10月20日"
+output: html_document
+---
+
+I will study the problem that whether a resident's race affects his/her life. In this project, I use the data from General Social Survey (GSS), which conducted between 1972 - 2012 from the residents of United States. The dataset names "gss". I will figure this out by contrasting the education and income level between the white and black race.
+
+First let's load the dataset as below:
+
+```{r}
+#The gss data can also be loaded from "http://d396qusza40orc.cloudfront.net/statistics/project/gss.Rdata"
+load("gss.Rdata")
+```
+
+The gss dataset has 114 variables, there are 3 variable I care about here are "race", "incom16" and "degree", so let's get the subset:
+
+```{r}
+#This project only care about race, income and eduction level
+gss_p = na.omit(gss[, c("race", "incom16", "degree")])
+```
+
+Let's see the summary of this subset:
+
+```{r}
+summary(gss_p)
+```
+
+The summary infomation shows that the main race in the USA are "White" and "Black", and there are 6 types of income level and 5 types of eduction level. So here I only concern "White" and "Black" race for this study.
+
+```{r}
+#Only concern about "White" and "Black" race
+data = subset(gss_p, gss_p$race == "White" | gss_p$race == "Black")
+summary(data)
+```
+
+So next I will use hypothsis test and confidence interval to test whether there is a difference between White and Black in income and eduction level.
+
+Income
+===========
+There are 6 income levels, I will study them one by one. As the method in study different types are the same, so I will use the income level "Far Below Average" as an example.
+
+#### Far Below Average
+Using **pw** and **pb** to represent the probabilty of the resident has a income far below the average. Cause I will use hypothsis test, now I state the hypothsis below:
+
+**H0: Race has no effect in income level far below average, the two probabilties are equal, i.e. pw = pb** 
+
+**H1: Race type does has an effect, i.e. pw ≠ pb**
+
+Now let's calculate the point estimate of **pw-pb**:
+
+```{r}
+
+```
+
+
+
+
+
+
+
