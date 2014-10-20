@@ -92,9 +92,20 @@ summary(data)</code></pre>
 <div id="far-below-average" class="section level4">
 <h4>Far Below Average</h4>
 <p>Using <strong>pw</strong> and <strong>pb</strong> to represent the probabilty of the resident has a income far below the average. Cause I will use hypothsis test, now I state the hypothsis below:</p>
-<p><strong>H0: Race has no effect in income level far below average, the two probabilty are equal, i.e. pw = pb</strong></p>
+<p><strong>H0: Race has no effect in income level far below average, the two probabilties are equal, i.e. pw = pb</strong></p>
 <p><strong>H1: Race type does has an effect, i.e. pw ≠ pb</strong></p>
 <p>Now let’s calculate the point estimate of <strong>pw-pb</strong>:</p>
+<pre class="r"><code>#Subset of data with income far below average
+data_income_farbelow = subset(data, data$incom16 == &quot;Far Below Average&quot;)
+#Point estimate of pw and pb.
+nw = nrow(subset(data_income_farbelow, data_income_farbelow$race == &quot;White&quot;))
+nb = nrow(subset(data_income_farbelow, data_income_farbelow$race == &quot;Black&quot;))
+pw_e = nw / nrow(data)
+pb_e = nb / nrow(data)
+pe = pw_e - pb_e
+se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
+se</code></pre>
+<pre><code>## [1] 0.006838567</code></pre>
 </div>
 </div>
 

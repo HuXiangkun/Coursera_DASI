@@ -51,7 +51,16 @@ Using **pw** and **pb** to represent the probabilty of the resident has a income
 Now let's calculate the point estimate of **pw-pb**:
 
 ```{r}
-
+#Subset of data with income far below average
+data_income_farbelow = subset(data, data$incom16 == "Far Below Average")
+#Point estimate of pw and pb.
+nw = nrow(subset(data_income_farbelow, data_income_farbelow$race == "White"))
+nb = nrow(subset(data_income_farbelow, data_income_farbelow$race == "Black"))
+pw_e = nw / nrow(data)
+pb_e = nb / nrow(data)
+pe = pw_e - pb_e
+se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
+se
 ```
 
 
