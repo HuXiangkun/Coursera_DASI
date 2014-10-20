@@ -93,19 +93,52 @@ summary(data)</code></pre>
 <h4>Far Below Average</h4>
 <p>Using <strong>pw</strong> and <strong>pb</strong> to represent the probabilty of the resident has a income far below the average. Cause I will use hypothsis test, now I state the hypothsis below:</p>
 <p><strong>H0: Race has no effect in income level far below average, the two probabilties are equal, i.e. pw = pb</strong></p>
-<p><strong>H1: Race type does has an effect, i.e. pw ≠ pb</strong></p>
-<p>Now let’s calculate the point estimate of <strong>pw-pb</strong>:</p>
+<p><strong>HA: Race type does has an effect, i.e. pw ≠ pb</strong></p>
+<p>First check the conditions.</p>
 <pre class="r"><code>#Subset of data with income far below average
 data_income_farbelow = subset(data, data$incom16 == &quot;Far Below Average&quot;)
-#Point estimate of pw and pb.
 nw = nrow(subset(data_income_farbelow, data_income_farbelow$race == &quot;White&quot;))
 nb = nrow(subset(data_income_farbelow, data_income_farbelow$race == &quot;Black&quot;))
+nw</code></pre>
+<pre><code>## [1] 2224</code></pre>
+<pre class="r"><code>nb</code></pre>
+<pre><code>## [1] 1030</code></pre>
+<p>Since the data are collect randomly, and the number of “White” and “Black” are all greater than 10, so the success-failure condition holds. We can say that the observations are all independent and nearly normal.</p>
+<p>Now let’s calculate the point estimate of <strong>pw-pb</strong>:</p>
+<pre class="r"><code>#Point estimate of pw and pb.
 pw_e = nw / nrow(data)
 pb_e = nb / nrow(data)
+#Point estimate of pw-pe
 pe = pw_e - pb_e
+#standard error
 se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
-se</code></pre>
-<pre><code>## [1] 0.006838567</code></pre>
+#confidence interval using 95% confidence level
+c(pe-1.96*se, pe+1.96*se)</code></pre>
+<pre><code>## [1] 0.01566731 0.04247449</code></pre>
+<pre class="r"><code>#p-value using 5% significance level
+2*(1 - pnorm(pe/se))</code></pre>
+<pre><code>## [1] 2.127973e-05</code></pre>
+<p>We can see that the p-value is extremely samll so we reject the null hypothsis. And the confidence interval agrees the result of hypothsis test. I have 95% confidence that the percentage of the “White” have income far below the average is 0.01566731 to 0.04247449 higher than “Black” in the population.</p>
+<p>In fact, I can write a function that can be used in all the income levels. Here is the function:</p>
+<pre class="r"><code>income_evaluate = function(incomelevel = &quot;Far Below Average&quot;) {
+  #subset of the given income level
+  subdata = subset(data, data$incom16 == incomelevel)
+  nw = nrow(subset(subdata, subdata$race == &quot;White&quot;))
+  nb = nrow(subset(subdata, subdata$race == &quot;Black&quot;))
+  #point estimate of the pw-pb
+  pw_e = nw / nrow(data)
+  pb_e = nb / nrow(data)
+  pe = pw_e - pb_e
+  #standard error
+  se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
+  #confidence interval using 95% confidence level
+  print(c(pe-1.96*se, pe+1.96*se))
+  #p-value using 5% significance level
+  print(2*(1 - pnorm(pe/se)))
+}</code></pre>
+<pre class="r"><code>income_evaluate(&quot;Far Below Average&quot;)</code></pre>
+<pre><code>## [1] 0.01566731 0.04247449
+## [1] 2.127973e-05</code></pre>
 </div>
 </div>
 
