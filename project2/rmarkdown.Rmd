@@ -5,12 +5,16 @@ date: "2014年10月20日"
 output: html_document
 ---
 
-I will study the problem that whether a resident's race affects his/her life. In this project, I use the data from General Social Survey (GSS), which conducted between 1972 - 2012 from the residents of United States. The dataset names "gss". I will figure this out by contrasting the education and income level between the white and black race.
+I will study the problem that whether a resident's race affects his/her life. The reseason I do this project is that, racial discrimination was a big problem in US history, though we advocate the equality for all today, the life of different races may not be the same. So this project will show the racical discrimination's exsistence in the USA.
+
+In this project, I use the data from General Social Survey (GSS), which conducted between 1972 - 2012 from the residents of United States. The dataset names "gss". The cases are residents of the USA. This is an observational study. The population are all the residents in the USA.
+
+I will figure this out by contrasting the education and income level between the white and black race.
 
 First let's load the dataset as below:
 
 ```{r}
-#The gss data can also be loaded from "http://d396qusza40orc.cloudfront.net/statistics/project/gss.Rdata"
+#Load data from the working directory
 load("gss.Rdata")
 ```
 
@@ -59,6 +63,10 @@ nw
 nb
 ```
 
+```{r,echo=FALSE}
+plot(data_income_farbelow$race, main = "Race info for income far below average")
+```
+
 Since the data are collect randomly, and the number of "White" and "Black" are all greater than 10, so the success-failure condition holds. We can say that the observations are all independent and nearly normal.
 
 Now let's calculate the point estimate of **pw-pb**:
@@ -94,11 +102,9 @@ income_evaluate = function(incomelevel = "Far Below Average") {
   #standard error
   se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
   #confidence interval using 95% confidence level
-  print(paste("Con"))
-  cat("(",as.character(pe-1.96*se),",")
-  print(c(pe-1.96*se, pe+1.96*se))
+  print(paste("Confidence Interval: (", as.character(pe-1.96*se), ", ", as.character(pe+1.96*se), ")", sep=""))
   #p-value using 5% significance level
-  print(2*(1 - pnorm(pe/se)))
+  print(paste("p-value: ", as.character(2*(1 - pnorm(pe/se)))))
 }
 ```
 
@@ -106,5 +112,102 @@ income_evaluate = function(incomelevel = "Far Below Average") {
 income_evaluate("Far Below Average")
 ```
 
+We can see the result is the same as above. Now we calculate the confidence interval and p-value for other income levels.
 
+#### Below Average
+
+```{r}
+income_evaluate("Below Average")
+```
+
+#### Average
+
+```{r}
+income_evaluate("Average")
+```
+
+#### Above Average
+
+```{r}
+income_evaluate("Above Average")
+```
+
+#### Far Above Average
+
+```{r}
+income_evaluate("Far Above Average")
+```
+
+The above result shows that except the "Far Above Average" level, other levels all reject the null hypothsis.
+
+Education
+====================
+The evaluating for education levels is just the same as the evaluation for the income level.
+
+First, I will write a function to  calculate the confidence interval and p-value.
+
+```{r}
+education_evaluate = function(educationlevel = "Lt High School") {
+  #subset of the given edu level
+  subdata = subset(data, data$degree == educationlevel)
+  nw = nrow(subset(subdata, subdata$race == "White"))
+  nb = nrow(subset(subdata, subdata$race == "Black"))
+  #point estimate of the pw-pb
+  pw_e = nw / nrow(data)
+  pb_e = nb / nrow(data)
+  pe = pw_e - pb_e
+  #standard error
+  se = sqrt(pw_e*(1 - pw_e)/nw + pb_e*(1 - pb_e)/nb)
+  #confidence interval using 95% confidence level
+  print(paste("Confidence Interval: (", as.character(pe-1.96*se), ", ", as.character(pe+1.96*se), ")", sep=""))
+  #p-value using 5% significance level
+  print(paste("p-value: ", as.character(2*(1 - pnorm(pe/se)))))
+}
+```
+
+Now I use this function to calculate the confidence interval and p-value for each education level.
+
+#### Lt High School
+
+```{r}
+education_evaluate("Lt High School")
+```
+
+#### High School
+
+```{r}
+education_evaluate("High School")
+```
+
+#### Junior College
+
+```{r}
+education_evaluate("Junior College")
+```
+
+#### Bachelor
+
+```{r}
+education_evaluate("Bachelor")
+```
+
+#### Graduate
+
+```{r}
+education_evaluate("Graduate")
+```
+
+The outputs show that all the evaluations reject the null hypothsis. Now we can see that "White" are more than "Black" in all education level.
+
+***So we can make the conclusion that the race type does affect the residents' life in the USA.***
+
+References
+==================
+The data set can be downloaded by this link: http://d396qusza40orc.cloudfront.net/statistics/project/gss.Rdata
+
+Appendix
+==================
+```{r,echo=FALSE}
+head(gss_p, n=30)
+```
 
